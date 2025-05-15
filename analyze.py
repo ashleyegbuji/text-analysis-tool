@@ -9,34 +9,43 @@ def getUsername():
     attempts = 0
 
   
-  while attempts < maxAttempts:
+    while attempts < maxAttempts:
 
       # Print message prompting user to input their name
       inputPrompt = ""
       if attempts == 0:
-        inputPrompt = "\nTo begin, please enter your username:\n"
+          inputPrompt = "\nTo begin, please enter your username:\n"
    
       else:  
         inputPrompt = "\nPlease try again:\n"
-    usernameFromInput = input(inputPrompt)
+      usernameFromInput = input(inputPrompt)
 
       # Validate Username
       if len(usernameFromInput) < 5 or not usernameFromInput.isidentifier():
-         print("Username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), and underscore only, no spaces and cannot start with a number")
+          print("Username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), and underscore only, no spaces and cannot start with a number")
       else:    
-         return usernameFromInput
+          return usernameFromInput
 
       attempts =+ 1
       
-print("\nExhausted all " + str(maxAttempts) + " attempts, assigning username instead...")
-return generate_username()[0]   
+    print("\nExhausted all " + str(maxAttempts) + " attempts, assigning username instead...")
+    return generate_username()[0]   
 
 
 # Greet the user
 def greetUser(name):
     print("Hello, " + name)
 
+# Get text from file
+def getArticleText():
+    f = open("files/article.txt", "r")
+    rawText = f.read()
+    f.close()
+    return rawText.replace("\n", " ").replace("\r", "") 
 
 welcomeUser()
 username = getUsername()  
 greetUser(username)      
+articleTextRaw = getArticleText()
+print("GOT:")
+print(articleTextRaw)
