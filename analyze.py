@@ -26,7 +26,7 @@ def getUsername():
 
       # Validate Username
       if len(usernameFromInput) < 5 or not usernameFromInput.isidentifier():
-          print("Username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), and underscore only, no spaces and cannot start with a number")
+          print("Username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), and underscore only, no spaces and cannot start with a number!")
       else:    
           return usernameFromInput
 
@@ -72,6 +72,17 @@ def getWordsPerSentence(sentences):
         totalWords += len(sentence.split(" "))
     return totalWords / numSentences
 
+# Filter raw tokenized words list to only include
+# valid english words
+def cleanseWordList(words):
+	cleansedWords = []
+	invalidWordPattern = "[^a-zA-Z-+]"
+	for word in words:
+		cleansedWord = word.replace(".", "").lower()
+		if (not re.search(invalidWordPattern, cleansedWord)) and len(word) > 1:
+			cleansedWords.append(cleansedWord)
+	return cleansedWords
+
 # Get User details
 welcomeUser()
 username = getUsername()  
@@ -82,11 +93,14 @@ articleTextRaw = getArticleText()
 articleSentences = tokenizeSentences(articleTextRaw)
 articleWords = tokenizeWords(articleSentences)
 
-# Get Analytics
+# Get Sentence Analytics
 stockSearchPattern = "[0-9]|[%$€£]|thousand|million|billion|trillion|profit|loss"
 keySentences = extractKeySentences(articleSentences, stockSearchPattern)
 wordsPerSentence = getWordsPerSentence(articleSentences)
 
+# Get Word Analytics
+articleWordsCleansed = cleanseWordList(articleWords)
+
 # Print for testing
 print("GOT:")
-print(wordsPerSentence)
+print(articleWordsCleansed)
