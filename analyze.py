@@ -42,10 +42,28 @@ def getArticleText():
     rawText = f.read()
     f.close()
     return rawText.replace("\n", " ").replace("\r", "") 
+    
+# Extract sentences    
+def tokenizeSentences(rawText):
+    return sent_tokenize(rawText)    
 
+# Extract Words from list of Sentences
+def tokenizeWords(Sentences):
+    words = []
+    for sentence in sentences:
+        words.extend(word_tokenize(sentence))
+    return words
+
+# Get User details
 welcomeUser()
 username = getUsername()  
-greetUser(username)      
+greetUser(username)     
+
+# Extract and tokenize text 
 articleTextRaw = getArticleText()
+articleSentences = tokenizeSentences(articleTextRaw)
+articleWords = tokenizeWords(articleSentences)
+
+# Print for testing
 print("GOT:")
-print(articleTextRaw)
+print(articleWords)
