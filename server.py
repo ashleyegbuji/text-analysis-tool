@@ -9,9 +9,13 @@ app = Flask(__name__)
 # The route() function of the Flask class is a decorator, 
 # which tells the application which URL should call 
 # the associated function.
-@app.route('/health', methods=["GET"])
+@app.route('/health')
 def healthCheck():
     return 'Flask server is up and running'
+
+@app.route('/analyze-stock')
+def analyzeStock():
+    return {data: 'Analysis coming soon'}
 
 # main driver function
 if __name__ == '__main__':
