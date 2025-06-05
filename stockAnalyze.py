@@ -71,7 +71,12 @@ def getCompanyStockInfo(tickerSymbol):
 
 	# Get basic info on company
 	basicInfo = extractBasicInfo(company.info)
-	priceHistory = getPriceHistory(company)
+	
+	# Check if company exists, if not, trigger errorMore actions
+	if not basicInfo["longName"]:
+		raise NameError("Could not find stock info, ticker may be delisted or does not exist.")
+
+    priceHistory = getPriceHistory(company)
 	futureEarningsDates = getEarningsDates(company)
 	newsArticles = getCompanyNews(company)
 	newsArticlesAllText = extractCompanyNewsArticles(newsArticles)
