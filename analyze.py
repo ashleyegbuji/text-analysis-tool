@@ -1,4 +1,4 @@
-import base64More actions
+import base64
 from io import BytesIO
 from random_username.generate import generate_username
 import re, nltk, json
@@ -20,93 +20,93 @@ sentimentAnalyzer = SentimentIntensityAnalyzer()
 
 # Welcome User
 def welcomeUser():
-	print("\nWelcome to the text analysis tool, I will mine and analyze a body of text from a file you give me!")
+    print("\nWelcome to the text analysis tool, I will mine and analyze a body of text from a file you give me!")
 
 # Get Username
 def getUsername():
-	maxAttempts = 3
-	attempts = 0
+    maxAttempts = 3
+    attempts = 0
 
-	while attempts < maxAttempts:
-		inputPrompt = ""
-		if attempts == 0:
-			inputPrompt = "\nTo begin, please enter your username:\n"
-		else:
-			inputPrompt = "\nPlease try again:\n"
-		usernameFromInput = input(inputPrompt)
+    while attempts < maxAttempts:
+        inputPrompt = ""
+        if attempts == 0:
+            inputPrompt = "\nTo begin, please enter your username:\n"
+        else:
+            inputPrompt = "\nPlease try again:\n"
+        usernameFromInput = input(inputPrompt)
 
-		if len(usernameFromInput) < 5 or not usernameFromInput.isidentifier():
-			print("Your username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), have no spaces, and cannot start with a number!")
-		else:
-			return usernameFromInput
-		attempts += 1
+        if len(usernameFromInput) < 5 or not usernameFromInput.isidentifier():
+            print("Your username must be at least 5 characters long, alphanumeric only (a-z/A-Z/0-9), have no spaces, and cannot start with a number!")
+        else:
+            return usernameFromInput
+        attempts += 1
 
-	print("\nExhausted all " + str(maxAttempts) + " attempts, assigning username instead...")
-	return generate_username()[0]
+    print("\nExhausted all " + str(maxAttempts) + " attempts, assigning username instead...")
+    return generate_username()[0]
 
 # Greet the user
 def greetUser(name):
-	print("Hello, " + name)
+    print("Hello, " + name)
 
 
 # Get text from file
 def getArticleText():
-	f = open("files/article.txt", "r")
-	rawText = f.read()
-	f.close()
-	return rawText.replace("\n", " ").replace("\r", "")
+    f = open("files/article.txt", "r")
+    rawText = f.read()
+    f.close()
+    return rawText.replace("\n", " ").replace("\r", "")
 
 # Extract Sentences from raw Text Body
 def tokenizeSentences(rawText):
-	return sent_tokenize(rawText)
+    return sent_tokenize(rawText)
 
 # Extract Words from list of Sentences
 def tokenizeWords(sentences):
-	words = []
-	for sentence in sentences:
-		words.extend(word_tokenize(sentence))
-	return words
+    words = []
+    for sentence in sentences:
+        words.extend(word_tokenize(sentence))
+    return words
 
 # Get the key sentences based on search pattern of key words
 def extractKeySentences(sentences, searchPattern):
-	matchedSentences = []
-	for sentence in sentences:
-		if re.search(searchPattern, sentence.lower()):
-			matchedSentences.append(sentence)
-	return matchedSentences
+    matchedSentences = []
+    for sentence in sentences:
+        if re.search(searchPattern, sentence.lower()):
+            matchedSentences.append(sentence)
+    return matchedSentences
 
 # Get the average words per sentence, excluding punctuation
 def getWordsPerSentence(sentences):
-	totalWords = 0
-	for sentence in sentences:
-		totalWords += len(sentence.split(" "))
-	return totalWords / len(sentences)
+    totalWords = 0
+    for sentence in sentences:
+        totalWords += len(sentence.split(" "))
+    return totalWords / len(sentences)
 
 # Convert part of speech from pos_tag() function into wordnet compatible pos tag
 posToWordnetTag = {
-	"J": wordnet.ADJ,
-	"V": wordnet.VERB,
-	"N": wordnet.NOUN,
-	"R": wordnet.ADV
+    "J": wordnet.ADJ,
+    "V": wordnet.VERB,
+    "N": wordnet.NOUN,
+    "R": wordnet.ADV
 }
 
 def treebankPosToWordnetPos(partOfSpeech):
-	posFirstChar = partOfSpeech[0]
-	if posFirstChar in posToWordnetTag:
-		return posToWordnetTag[posFirstChar]
-	return wordnet.NOUN
+    posFirstChar = partOfSpeech[0]
+    if posFirstChar in posToWordnetTag:
+        return posToWordnetTag[posFirstChar]
+    return wordnet.NOUN
 
 # Convert raw list of (word, POS) tuple to a list of strings that only include valid english words
 def cleanseWordList(posTaggedWordTuples):
-	cleansedWords = []
-	invalidWordPattern = "[^a-zA-Z-+]"
-	for posTaggedWordTuple in posTaggedWordTuples:
-		word = posTaggedWordTuple[0]
-		pos = posTaggedWordTuple[1]
-		cleansedWord = word.replace(".", "").lower()
-		if (not re.search(invalidWordPattern, cleansedWord)) and len(cleansedWord) > 1 and cleansedWord not in stopWords:
-			cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos)))
-	return cleansedWords
+    cleansedWords = []
+    invalidWordPattern = "[^a-zA-Z-+]"
+    for posTaggedWordTuple in posTaggedWordTuples:
+        word = posTaggedWordTuple[0]
+        pos = posTaggedWordTuple[1]
+        cleansedWord = word.replace(".", "").lower()
+        if (not re.search(invalidWordPattern, cleansedWord)) and len(cleansedWord) > 1 and cleansedWord not in stopWords:
+            cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos)))
+    return cleansedWords
 
 # Main text analyzer
 def analyzeText(textToAnalyze, username="default_user"):
@@ -127,12 +127,12 @@ def analyzeText(textToAnalyze, username="default_user"):
     wordCloudFilePath = "results/wordcloud.png"
     wordcloud = WordCloud(width=1000, height=700, background_color="white", colormap="Set3", collocations=False).generate(separator.join(articleWordsCleansed))
   # wordcloud.to_file(wordCloudFilePath)
-	imgIo = BytesIO()
-	wordcloud.to_image().save(imgIo, format='PNG')
-	imgIo.seek(0)  # Move the pointer to the beginning of the BytesIO object
+    imgIo = BytesIO()
+    wordcloud.to_image().save(imgIo, format='PNG')
+    imgIo.seek(0)  # Move the pointer to the beginning of the BytesIO object
     
     # Encode the image as base64
-	encodedWordcloud = base64.b64encode(imgIo.getvalue()).decode('utf-8')
+    encodedWordcloud = base64.b64encode(imgIo.getvalue()).decode('utf-8')
     # Run Sentiment Analysis
     sentimentResult = sentimentAnalyzer.polarity_scores(textToAnalyze)
 
@@ -144,7 +144,7 @@ def analyzeText(textToAnalyze, username="default_user"):
             "wordsPerSentence": round(wordsPerSentence, 1),
             "sentiment": sentimentResult,
             "wordCloudFilePath": wordCloudFilePath,
-			"wordCloudImage": encodedWordcloud,
+            "wordCloudImage": encodedWordcloud,
         },
         "metadata": {
             "sentencesAnalyzed": len(articleSentences),

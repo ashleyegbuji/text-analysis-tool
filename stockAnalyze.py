@@ -25,14 +25,14 @@ def getPriceHistory(company):
     }
 
 def getEarningsDates(company):
-	return []
-	# print(company)
     earningsDatesDf = company.earnings_dates
     allDates = earningsDatesDf.index.strftime('%Y-%m-%d').tolist()
     dateObjects = [datetime.strptime(date, '%Y-%m-%d') for date in allDates]
     currentDate = datetime.now()
     futureDates = [date.strftime('%Y-%m-%d') for date in dateObjects if date > currentDate]
     return futureDates
+
+
 
 def getCompanyNews(company):
     newsList = company.news
